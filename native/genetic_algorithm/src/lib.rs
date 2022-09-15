@@ -1,46 +1,62 @@
-#[rustler::nif]
-fn add(a: i64, b: i64) -> i64 {
-    a + b
-}
-
+use chrono::{Datelike, NaiveDate, Weekday};
 use serde::{Deserialize, Serialize};
+use std::hash::{Hash, Hasher};
 
-#[derive(Serialize, Deserialize, Debug)]
-struct Point {
-    x: i64,
-    y: i64,
+#[derive(Serialize, Deserialize)]
+#[serde(remote = "NaiveDate")]
+struct NaiveDateDef {
+    #[serde(getter = "NaiveDate::year")]
+    year: i32,
+    #[serde(getter = "NaiveDate::month")]
+    month: u32,
+    #[serde(getter = "NaiveDate::day")]
+    day: u32,
+}
+impl From<NaiveDateDef> for NaiveDate {
+    fn from(def: NaiveDateDef) -> NaiveDate {
+        NaiveDate::from_ymd(def.year, def.month, def.day)
+    }
+}
+#[derive(Debug, Serialize, Deserialize)]
+struct Adult {
+    pub name: String,
+    #[serde(with = "NaiveDateDef")]
+    pub start_date: NaiveDate,
+    #[serde(with = "NaiveDateDef")]
+    pub end_date: NaiveDate,
+    //pub allowed_weekdays: Vec<Weekday>,
+    #[serde(default)]
+    pub weight_to_assign: f64,
+    #[serde(default)]
+    pub number_of_assigns: usize,
+    #[serde(default)]
+    pub number_of_assigns_modifier: isize,
+}
+
+//impl Adult {
+//pub fn allow_weekday(&self, weekday: Weekday) -> bool {
+//self.allowed_weekdays.contains(&weekday)
+//}
+//}
+impl PartialEq for Adult {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+    }
+}
+impl Eq for Adult {}
+impl Hash for Adult {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.name.hash(state);
+    }
 }
 
 #[rustler::nif]
-fn point(a: i64, b: i64) -> () {
-    let point = Point { x: a, y: b };
+fn run(adults_json: String) -> String {
+    let adults: Vec<Adult> = serde_json::from_str(&adults_json).unwrap();
+    println!("{:?}", adults);
 
-    // Convert the Point to a JSON string.
-    let serialized = serde_json::to_string(&point).unwrap();
-
-    // Prints serialized = {"x":1,"y":2}
-    println!("serialized = {}", serialized);
-
-    // Convert the JSON string back to a Point.
-    let deserialized: Point = serde_json::from_str(&serialized).unwrap();
-
-    // Prints deserialized = Point { x: 1, y: 2 }
-    println!("deserialized = {:?}", deserialized);
-}
-
-#[rustler::nif]
-fn parse(input: String) -> String {
-    // Convert the JSON string back to a Point.
-    let mut deserialized: Point = serde_json::from_str(&input).unwrap();
-
-    // Prints deserialized = Point { x: 1, y: 2 }
-    println!("deserialized = {:?}", deserialized);
-
-    deserialized.y = 10;
-
-    // Convert the Point to a JSON string.
-    let serialized = serde_json::to_string(&deserialized).unwrap();
+    let serialized = serde_json::to_string(&adults).unwrap();
     serialized
 }
 
-rustler::init!("Elixir.GeneticAlgorithm", [add, point, parse]);
+rustler::init!("Elixir.GeneticAlgorithm", [run]);
