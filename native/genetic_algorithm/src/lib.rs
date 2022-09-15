@@ -58,10 +58,21 @@ impl Hash for Adult {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct Period {
+    #[serde(with = "NaiveDateDef")]
+    pub start_date: NaiveDate,
+    #[serde(with = "NaiveDateDef")]
+    pub end_date: NaiveDate,
+}
+
 #[rustler::nif]
-fn run(adults_json: String) -> String {
+fn run(adults_json: String, periods_json: String) -> String {
     let adults: Vec<Adult> = serde_json::from_str(&adults_json).unwrap();
-    println!("{:?}", adults);
+    println!("adults: {:?}", adults);
+
+    let periods: Vec<Period> = serde_json::from_str(&periods_json).unwrap();
+    println!("periods: {:?}", periods);
 
     let serialized = serde_json::to_string(&adults).unwrap();
     serialized
