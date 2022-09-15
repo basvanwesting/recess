@@ -36,7 +36,13 @@ periods = [
   },
 ]
 
+exception_dates = [
+  %{year: 2022, month: 1, day: 4},
+  %{year: 2022, month: 2, day: 4},
+]
+
 GeneticAlgorithm.run(
   Jason.encode!(adults),
-  Jason.encode!(periods)
+  Jason.encode!(periods),
+  Jason.encode!(exception_dates)
 ) |> Jason.decode!() |> IO.inspect()
