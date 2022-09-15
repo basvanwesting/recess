@@ -17,6 +17,7 @@ impl From<NaiveDateDef> for NaiveDate {
         NaiveDate::from_ymd(def.year, def.month, def.day)
     }
 }
+
 #[derive(Debug, Serialize, Deserialize)]
 struct Adult {
     pub name: String,
@@ -24,7 +25,9 @@ struct Adult {
     pub start_date: NaiveDate,
     #[serde(with = "NaiveDateDef")]
     pub end_date: NaiveDate,
-    //pub allowed_weekdays: Vec<Weekday>,
+    pub monday: bool,
+    pub tuesday: bool,
+    pub thursday: bool,
     #[serde(default)]
     pub weight_to_assign: f64,
     #[serde(default)]
@@ -33,11 +36,16 @@ struct Adult {
     pub number_of_assigns_modifier: isize,
 }
 
-//impl Adult {
-//pub fn allow_weekday(&self, weekday: Weekday) -> bool {
-//self.allowed_weekdays.contains(&weekday)
-//}
-//}
+impl Adult {
+    pub fn allow_weekday(&self, weekday: Weekday) -> bool {
+        match weekday {
+            Weekday::Mon => self.monday,
+            Weekday::Tue => self.tuesday,
+            Weekday::Thu => self.thursday,
+            _ => false,
+        }
+    }
+}
 impl PartialEq for Adult {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
