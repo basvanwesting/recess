@@ -36,12 +36,10 @@ periods = [
   },
 ]
 
-exception_dates = %{
-  naive_dates: [
-    "2022-01-04", #%{year: 2022, month: 1, day: 4},
-    "2022-02-04", #%{year: 2022, month: 2, day: 4},
-  ]
-}
+exception_dates = [
+  "2022-01-04", #%{year: 2022, month: 1, day: 4},
+  "2022-02-04", #%{year: 2022, month: 2, day: 4},
+]
 
 GeneticAlgorithm.run(
   Jason.encode!(adults),

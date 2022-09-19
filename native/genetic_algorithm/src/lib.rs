@@ -98,13 +98,6 @@ struct Period {
     pub end_date: NaiveDate,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct NaiveDatesWrapper {
-    #[serde(with = "naive_dates_serde")]
-    #[serde(default)]
-    pub naive_dates: Vec<NaiveDate>,
-}
-
 #[rustler::nif]
 fn run(adults_json: String, periods_json: String, exception_dates_json: String) -> String {
     let adults: Vec<Adult> = serde_json::from_str(&adults_json).unwrap();
@@ -114,7 +107,7 @@ fn run(adults_json: String, periods_json: String, exception_dates_json: String) 
     println!("periods: {:?}", periods);
 
     let mut de = serde_json::Deserializer::from_str(&exception_dates_json);
-    let exception_dates = NaiveDatesWrapper::deserialize(&mut de).unwrap();
+    let exception_dates = naive_dates_serde::deserialize(&mut de).unwrap();
     println!("exception_dates: {:?}", exception_dates);
 
     let serialized = serde_json::to_string(&adults).unwrap();
