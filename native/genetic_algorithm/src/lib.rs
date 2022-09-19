@@ -2,31 +2,57 @@ use chrono::{Datelike, NaiveDate, Weekday};
 use serde::{Deserialize, Serialize};
 use std::hash::{Hash, Hasher};
 
-#[derive(Serialize, Deserialize)]
-#[serde(remote = "NaiveDate")]
-struct NaiveDateDef {
-    #[serde(getter = "NaiveDate::year")]
-    year: i32,
-    #[serde(getter = "NaiveDate::month")]
-    month: u32,
-    #[serde(getter = "NaiveDate::day")]
-    day: u32,
+mod naive_date_serde {
+    use chrono::NaiveDate;
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    pub fn serialize<S: Serializer>(
+        naive_date: &NaiveDate,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        naive_date
+            .format("%Y-%m-%d")
+            .to_string()
+            .serialize(serializer)
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(deserializer: D) -> Result<NaiveDate, D::Error> {
+        let string: String = Deserialize::deserialize(deserializer)?;
+        NaiveDate::parse_from_str(&string, "%Y-%m-%d").map_err(serde::de::Error::custom)
+    }
 }
-impl From<NaiveDateDef> for NaiveDate {
-    fn from(def: NaiveDateDef) -> NaiveDate {
-        NaiveDate::from_ymd(def.year, def.month, def.day)
+mod naive_dates_serde {
+    use chrono::NaiveDate;
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    pub fn serialize<S: Serializer>(
+        naive_dates: &Vec<NaiveDate>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        naive_dates
+            .iter()
+            .map(|v| v.format("%Y-%m-%d").to_string())
+            .collect::<Vec<String>>()
+            .serialize(serializer)
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<Vec<NaiveDate>, D::Error> {
+        let strings: Vec<String> = Deserialize::deserialize(deserializer)?;
+        strings
+            .iter()
+            .map(|string| {
+                NaiveDate::parse_from_str(string, "%Y-%m-%d").map_err(serde::de::Error::custom)
+            })
+            .collect()
     }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct DateWrapper(#[serde(with = "NaiveDateDef")] pub NaiveDate);
-
-#[derive(Debug, Serialize, Deserialize)]
 struct Adult {
     pub name: String,
-    #[serde(with = "NaiveDateDef")]
+    #[serde(with = "naive_date_serde")]
     pub start_date: NaiveDate,
-    #[serde(with = "NaiveDateDef")]
+    #[serde(with = "naive_date_serde")]
     pub end_date: NaiveDate,
     pub monday: bool,
     pub tuesday: bool,
@@ -37,6 +63,9 @@ struct Adult {
     pub number_of_assigns: usize,
     #[serde(default)]
     pub number_of_assigns_modifier: isize,
+    #[serde(with = "naive_dates_serde")]
+    #[serde(default)]
+    pub assigned_dates: Vec<NaiveDate>,
 }
 
 impl Adult {
@@ -63,10 +92,17 @@ impl Hash for Adult {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Period {
-    #[serde(with = "NaiveDateDef")]
+    #[serde(with = "naive_date_serde")]
     pub start_date: NaiveDate,
-    #[serde(with = "NaiveDateDef")]
+    #[serde(with = "naive_date_serde")]
     pub end_date: NaiveDate,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct NaiveDatesWrapper {
+    #[serde(with = "naive_dates_serde")]
+    #[serde(default)]
+    pub naive_dates: Vec<NaiveDate>,
 }
 
 #[rustler::nif]
@@ -77,12 +113,8 @@ fn run(adults_json: String, periods_json: String, exception_dates_json: String) 
     let periods: Vec<Period> = serde_json::from_str(&periods_json).unwrap();
     println!("periods: {:?}", periods);
 
-    let wrapped_dates: Vec<DateWrapper> = serde_json::from_str(&exception_dates_json).unwrap();
-    let exception_dates: Vec<NaiveDate> = wrapped_dates
-        .into_iter()
-        .map(|DateWrapper(date)| date)
-        .collect();
-
+    let mut de = serde_json::Deserializer::from_str(&exception_dates_json);
+    let exception_dates = NaiveDatesWrapper::deserialize(&mut de).unwrap();
     println!("exception_dates: {:?}", exception_dates);
 
     let serialized = serde_json::to_string(&adults).unwrap();
