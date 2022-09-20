@@ -8,7 +8,7 @@ pub struct RecessConfig {
     pub variant: HillClimbVariant,
     pub multithreading: bool,
     pub invalid_assign_penalty: f64,
-    pub min_allowed_interval: f64,
+    pub min_allowed_interval: i64,
     pub std_dev_precision: f64,
 }
 

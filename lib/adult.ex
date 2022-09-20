@@ -119,7 +119,23 @@ defmodule Recess.Adult do
     Enum.each(errors(adults), &(IO.puts(&1)))
 
     IO.puts("")
-    IO.puts("STATS:")
+    IO.puts("STATS (of minimum interval per adult):")
+    stats =
+      adults
+      |> Enum.map(fn adult ->
+        adult.assigned_dates
+        |> Enum.chunk_every(2, 1, :discard)
+        |> Enum.map(fn [a, b] -> Date.diff(b, a) end)
+        |> Enum.min()
+      end)
+      |> Statistex.statistics()
+    IO.puts("average: #{Float.round(stats.average, 1)}")
+    IO.puts("minimum: #{stats.minimum}")
+    IO.puts("maximum: #{stats.maximum}")
+    IO.puts("standard_deviation: #{Float.round(stats.standard_deviation, 1)}")
+
+    IO.puts("")
+    IO.puts("STATS (of all intervals):")
     stats =
       adults
       |> Enum.flat_map(fn adult ->

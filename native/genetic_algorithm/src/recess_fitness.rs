@@ -3,7 +3,8 @@ use chrono::{Datelike, NaiveDate};
 use genetic_algorithm::strategy::hill_climb::prelude::*;
 //use itertools::Itertools;
 use crate::recess_config::RecessConfig;
-use statrs::statistics::Statistics;
+use statrs::statistics::Data;
+use statrs::statistics::OrderStatistics;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
@@ -32,10 +33,10 @@ impl<'a> Fitness for RecessFitness<'a> {
                 let date = &dates[index];
                 let adult = &adults[*value];
                 if !adult.allow_weekday(date.weekday()) {
-                    score += recess_config.invalid_assign_penalty;
+                    score -= recess_config.invalid_assign_penalty;
                 }
                 if adult.start_date > *date || adult.end_date < *date {
-                    score += recess_config.invalid_assign_penalty;
+                    score -= recess_config.invalid_assign_penalty;
                 }
                 assigns
                     .entry(adult)
@@ -43,23 +44,25 @@ impl<'a> Fitness for RecessFitness<'a> {
                     .or_insert(vec![date]);
             });
 
-        let mut intervals: Vec<f64> = vec![];
+        let mut min_intervals: Vec<f64> = vec![];
         adults.iter().for_each(|adult| {
             if let Some(dates) = assigns.get(adult) {
-                dates.windows(2).for_each(|pair| {
-                    let interval = (*pair[1] - *pair[0]).num_days() as f64;
-                    if interval < recess_config.min_allowed_interval {
-                        score += recess_config.invalid_assign_penalty;
-                    }
-                    intervals.push(interval);
-                });
+                if dates.len() > 1 {
+                    let mut adult_intervals: Vec<i64> = vec![];
+                    dates.windows(2).for_each(|pair| {
+                        let interval = (*pair[1] - *pair[0]).num_days();
+                        if interval < recess_config.min_allowed_interval {
+                            score -= recess_config.invalid_assign_penalty;
+                        }
+                        adult_intervals.push(interval);
+                    });
+                    min_intervals.push(Iterator::min(adult_intervals.into_iter()).unwrap() as f64);
+                }
             }
         });
 
-        //let mean = Statistics::mean(&intervals);
-        //score -= MEAN_MULTIPLIER * mean; // maximize mean
-        let std_dev = Statistics::population_std_dev(&intervals);
-        score += std_dev / recess_config.std_dev_precision; // minimize std_dev
+        let mut x = Data::new(min_intervals);
+        score += x.percentile(0) / recess_config.std_dev_precision;
 
         Some(score as isize)
     }

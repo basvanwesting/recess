@@ -27,7 +27,7 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
         .with_max_stale_generations(recess_config.max_stale_generations)
         .with_multithreading(recess_config.multithreading)
         .with_fitness(RecessFitness(&adults, &dates, recess_config))
-        .with_fitness_ordering(FitnessOrdering::Minimize);
+        .with_fitness_ordering(FitnessOrdering::Maximize);
 
     //let now = std::time::Instant::now();
     let hill_climb = hill_climb_builder.call(&mut rng).unwrap();
@@ -37,7 +37,8 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
     //println!("{}", hill_climb);
 
     if let Some(best_chromosome) = hill_climb.best_chromosome() {
-        if let Some(_fitness_score) = best_chromosome.fitness_score {
+        if let Some(fitness_score) = best_chromosome.fitness_score {
+            println!("fitness_score: {}", fitness_score);
             best_chromosome
                 .genes
                 .iter()
