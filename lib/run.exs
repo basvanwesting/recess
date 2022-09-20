@@ -34,8 +34,6 @@ adults = [
   %{name: "V"},
   %{name: "W"},
   %{name: "X"},
-  %{name: "Y"},
-  %{name: "Z"},
 ] |> Enum.map(fn attr -> Map.merge(default_adult, attr) end)
 
 periods = [
@@ -65,7 +63,7 @@ exception_dates = [
 dates =
   periods
   |> Enum.flat_map(&(&1))
-  |> Enum.reject(fn date -> Date.day_of_week(date) in [6,7] end) #sat/sun
+  |> Enum.filter(fn date -> Date.day_of_week(date) in [1,2,4] end) #mon/tue/thu
   |> Enum.reject(fn date -> MapSet.member?(exception_dates, date) end)
 
 adults =
@@ -98,7 +96,7 @@ adults =
 {adults, number_of_dates_to_assign} =
   adults
   |> Enum.map_reduce(number_of_dates_to_assign, fn adult, remaining_dates_to_assign ->
-    weight_to_assign = min(remaining_dates_to_assign, floor(adult.weight_to_assign))
+    weight_to_assign = min(remaining_dates_to_assign, floor(adult.weight_to_assign)) |> max(0)
     {
       %{adult |
         number_of_assigns: adult.number_of_assigns + weight_to_assign,
@@ -113,7 +111,7 @@ adults =
   adults
   |> Enum.sort_by(&(&1.weight_to_assign), :desc)
   |> Enum.map_reduce(number_of_dates_to_assign, fn adult, remaining_dates_to_assign ->
-    weight_to_assign = min(remaining_dates_to_assign, 1)
+    weight_to_assign = min(remaining_dates_to_assign, 1) |> max(0)
     {
       %{adult |
         number_of_assigns: adult.number_of_assigns + weight_to_assign,
@@ -123,9 +121,51 @@ adults =
     }
   end)
 
-adults = Enum.map(adults, &(Map.drop(&1, [:weight_to_assign, :number_of_assigns_modifier])))
+adults =
+  adults
+  |> Enum.map(&(Map.drop(&1, [:weight_to_assign, :number_of_assigns_modifier])))
+  |> Enum.sort_by(&(&1.name))
 
-GeneticAlgorithm.run(
-  Jason.encode!(adults) |> IO.inspect(label: "elixir adults"),
-  Jason.encode!(dates) |> IO.inspect(label: "elixir dates")
-) |> Jason.decode!() |> IO.inspect()
+config = %{
+  max_stale_generations: 10_000,
+  variant: "Stochastic",
+  multithreading: false,
+  #max_stale_generations: 1_000,
+  #variant: "SteepestAscent",
+  invalid_assign_penalty: 1_000_000,
+  min_allowed_interval: 21,
+  std_dev_precision: 1.0e-3,
+}
+
+results = GeneticAlgorithm.run(
+  Jason.encode!(adults),
+  Jason.encode!(dates),
+  Jason.encode!(config)
+) |> Jason.decode!() |> IO.inspect(label: "results")
+
+#errors =
+  #adults
+  #|> Enum.reduce([], fn adult, errors ->
+    #adult.assigned_dates
+    #|> Enum.reduce(errors, fn assigned_date, errors ->
+      #if Date.compare(assigned_date, adult.start_date) == :lt do
+        #errors = ["adult #{adult.name}, assigned_date (#{assigned_date}) before start_date (#{adult.start_date})" | errors]
+      #end
+      #if Date.compare(assigned_date, adult.end_date) == :gt do
+        #errors = ["adult #{adult.name}, assigned_date (#{assigned_date}) after end_date (#{adult.end_date})" | errors]
+      #end
+      #if Date.day_of_week(assigned_date) == 1 && !adult.monday do
+        #errors = ["adult #{adult.name}, assigned_date (#{assigned_date}) is monday but not allowed" | errors]
+      #end
+      #if Date.day_of_week(assigned_date) == 2 && !adult.tuesday do
+        #errors = ["adult #{adult.name}, assigned_date (#{assigned_date}) is monday but not allowed" | errors]
+      #end
+      #if Date.day_of_week(assigned_date) == 4 && !adult.thursday do
+        #errors = ["adult #{adult.name}, assigned_date (#{assigned_date}) is monday but not allowed" | errors]
+      #end
+      #errors
+    #end)
+  #end)
+  #|> IO.inspect()
+
+

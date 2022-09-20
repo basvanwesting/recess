@@ -2,16 +2,16 @@ use crate::adult::Adult;
 use chrono::{Datelike, NaiveDate};
 use genetic_algorithm::strategy::hill_climb::prelude::*;
 //use itertools::Itertools;
+use crate::recess_config::RecessConfig;
 use statrs::statistics::Statistics;
 use std::collections::HashMap;
 
-const INVALID_ASSIGN_PENALTY: f64 = 1_000_000.0;
-const MIN_ALLOWED_INTERVAL: f64 = 21.0;
-//const MEAN_MULTIPLIER: f64 = 100.0;
-const STD_DEV_MULTIPLIER: f64 = 1000.0;
-
 #[derive(Clone, Debug)]
-pub struct RecessFitness<'a>(pub &'a Vec<Adult>, pub &'a Vec<NaiveDate>);
+pub struct RecessFitness<'a>(
+    pub &'a Vec<Adult>,
+    pub &'a Vec<NaiveDate>,
+    pub &'a RecessConfig,
+);
 impl<'a> Fitness for RecessFitness<'a> {
     type Genotype = UniqueGenotype;
     fn calculate_for_chromosome(
@@ -20,6 +20,7 @@ impl<'a> Fitness for RecessFitness<'a> {
     ) -> Option<FitnessValue> {
         let adults = self.0;
         let dates = self.1;
+        let recess_config = self.2;
         let mut score = 0.0;
 
         let mut assigns: HashMap<&Adult, Vec<&NaiveDate>> = HashMap::new();
@@ -31,10 +32,10 @@ impl<'a> Fitness for RecessFitness<'a> {
                 let date = &dates[index];
                 let adult = &adults[*value];
                 if !adult.allow_weekday(date.weekday()) {
-                    score += INVALID_ASSIGN_PENALTY;
+                    score += recess_config.invalid_assign_penalty;
                 }
                 if adult.start_date > *date || adult.end_date < *date {
-                    score += INVALID_ASSIGN_PENALTY;
+                    score += recess_config.invalid_assign_penalty;
                 }
                 assigns
                     .entry(adult)
@@ -47,8 +48,8 @@ impl<'a> Fitness for RecessFitness<'a> {
             if let Some(dates) = assigns.get(adult) {
                 dates.windows(2).for_each(|pair| {
                     let interval = (*pair[1] - *pair[0]).num_days() as f64;
-                    if interval < MIN_ALLOWED_INTERVAL {
-                        score += INVALID_ASSIGN_PENALTY;
+                    if interval < recess_config.min_allowed_interval {
+                        score += recess_config.invalid_assign_penalty;
                     }
                     intervals.push(interval);
                 });
@@ -58,7 +59,7 @@ impl<'a> Fitness for RecessFitness<'a> {
         //let mean = Statistics::mean(&intervals);
         //score -= MEAN_MULTIPLIER * mean; // maximize mean
         let std_dev = Statistics::population_std_dev(&intervals);
-        score += STD_DEV_MULTIPLIER * std_dev; // minimize std_dev
+        score += std_dev / recess_config.std_dev_precision; // minimize std_dev
 
         Some(score as isize)
     }
