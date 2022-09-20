@@ -9,22 +9,17 @@ use self::adult::Adult;
 use self::recess_config::RecessConfig;
 
 #[rustler::nif]
-fn run(adults_json: String, dates_json: String, recess_config_json: String) -> String {
-    //println!("");
-    //println!("=== entering rust ===");
+fn call_nif(adults_json: String, dates_json: String, recess_config_json: String) -> String {
     let mut adults: Vec<Adult> = serde_json::from_str(&adults_json).unwrap();
 
     let mut de = serde_json::Deserializer::from_str(&dates_json);
     let dates = serde_naive_dates::deserialize(&mut de).unwrap();
 
     let recess_config: RecessConfig = serde_json::from_str(&recess_config_json).unwrap();
-    //println!("recess_config: {:?}", recess_config);
 
-    recess_algorithm::run(&mut adults, &dates, &recess_config);
+    recess_algorithm::call(&mut adults, &dates, &recess_config);
 
-    let serialized = serde_json::to_string(&adults).unwrap();
-    //println!("=== leaving rust ===");
-    serialized
+    serde_json::to_string(&adults).unwrap()
 }
 
-rustler::init!("Elixir.GeneticAlgorithm", [run]);
+rustler::init!("Elixir.Recess.GeneticAlgorithm", [call_nif]);

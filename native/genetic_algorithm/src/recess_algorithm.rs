@@ -6,7 +6,7 @@ use genetic_algorithm::strategy::hill_climb::prelude::*;
 use rand::prelude::*;
 use rand::rngs::SmallRng;
 
-pub fn run(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &RecessConfig) {
+pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &RecessConfig) {
     let mut rng = SmallRng::from_entropy();
     let genotype = UniqueGenotype::builder()
         .with_allele_list(
