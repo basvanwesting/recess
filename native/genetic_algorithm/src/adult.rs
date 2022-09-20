@@ -15,11 +15,7 @@ pub struct Adult {
     pub tuesday: bool,
     pub thursday: bool,
     #[serde(default)]
-    pub weight_to_assign: f64,
-    #[serde(default)]
     pub number_of_assigns: usize,
-    #[serde(default)]
-    pub number_of_assigns_modifier: isize,
     #[serde(with = "serde_naive_dates")]
     #[serde(default)]
     pub assigned_dates: Vec<NaiveDate>,
