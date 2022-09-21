@@ -52,6 +52,10 @@ adults = Recess.Adult.calculate_number_of_assigns(adults, dates)
 
 config = %{
   max_stale_generations: 100_000,
+  variant: "Stochastic",
+  #max_stale_generations: 1000,
+  #variant: "SteepestAscent",
+  multithreading: true,
   invalid_assign_penalty: 1_000_000,
   min_allowed_interval: 21,
 }

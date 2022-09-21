@@ -8,7 +8,7 @@ mod serde_naive_dates;
 use self::adult::Adult;
 use self::recess_config::RecessConfig;
 
-#[rustler::nif(schedule = "DirtyCpu")]
+#[rustler::nif]
 fn call_nif(adults_json: String, dates_json: String, recess_config_json: String) -> String {
     let mut adults: Vec<Adult> = serde_json::from_str(&adults_json).unwrap();
 
