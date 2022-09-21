@@ -11,9 +11,7 @@ pub struct Adult {
     pub start_date: NaiveDate,
     #[serde(with = "serde_naive_date")]
     pub end_date: NaiveDate,
-    pub monday: bool,
-    pub tuesday: bool,
-    pub thursday: bool,
+    pub allowed_weekdays: Vec<usize>,
     #[serde(default)]
     pub number_of_assigns: usize,
     #[serde(with = "serde_naive_dates")]
@@ -24,9 +22,11 @@ pub struct Adult {
 impl Adult {
     pub fn allow_weekday(&self, weekday: Weekday) -> bool {
         match weekday {
-            Weekday::Mon => self.monday,
-            Weekday::Tue => self.tuesday,
-            Weekday::Thu => self.thursday,
+            Weekday::Mon => self.allowed_weekdays.contains(&1),
+            Weekday::Tue => self.allowed_weekdays.contains(&2),
+            Weekday::Wed => self.allowed_weekdays.contains(&3),
+            Weekday::Thu => self.allowed_weekdays.contains(&4),
+            Weekday::Fri => self.allowed_weekdays.contains(&5),
             _ => false,
         }
     }

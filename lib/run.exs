@@ -1,9 +1,7 @@
 default_adult = %Recess.Adult{
   start_date: ~D[2022-01-01],
   end_date:   ~D[2022-12-31],
-  monday:     true,
-  tuesday:    true,
-  thursday:   true,
+  allowed_weekdays: [1,2,4],
   weight_to_assign: 0.0,
   number_of_assigns: 0,
   number_of_assigns_modifier: 0,
@@ -11,10 +9,10 @@ default_adult = %Recess.Adult{
 }
 
 adults = [
-  %{name: "A", start_date: ~D[2022-06-01], number_of_assigns_modifier: 2},
-  %{name: "B", start_date: ~D[2022-06-01], number_of_assigns_modifier: -1},
-  %{name: "C", start_date: ~D[2022-06-01]},
-  %{name: "D", start_date: ~D[2022-06-01]},
+  %{name: "A", start_date: ~D[2022-06-01], allowed_weekdays: [1,4,5], number_of_assigns_modifier: 2},
+  %{name: "B", start_date: ~D[2022-06-01], allowed_weekdays: [1,4,5], number_of_assigns_modifier: -1},
+  %{name: "C", start_date: ~D[2022-06-01], allowed_weekdays: [1,4,5]},
+  %{name: "D", start_date: ~D[2022-06-01], allowed_weekdays: [1,4,5]},
   %{name: "E", start_date: ~D[2022-06-01]},
   %{name: "F", start_date: ~D[2022-06-01]},
   %{name: "G", start_date: ~D[2022-06-01]},
@@ -38,10 +36,10 @@ adults = [
 ] |> Enum.map(fn attr -> Map.merge(default_adult, attr) end)
 
 periods = [
-  Date.range(~D[2022-01-01], ~D[2022-03-01]),
-  Date.range(~D[2022-04-01], ~D[2022-06-01]),
-  Date.range(~D[2022-07-01], ~D[2022-09-01]),
-  Date.range(~D[2022-10-01], ~D[2022-12-01]),
+  %Recess.Period{start_date: ~D[2022-01-01], end_date: ~D[2022-03-01], weekdays: [1,2]},
+  %Recess.Period{start_date: ~D[2022-04-01], end_date: ~D[2022-06-01], weekdays: [1,4]},
+  %Recess.Period{start_date: ~D[2022-07-01], end_date: ~D[2022-09-01], weekdays: [1,2,4,5]},
+  %Recess.Period{start_date: ~D[2022-10-01], end_date: ~D[2022-12-01], weekdays: [1,2,4]},
 ]
 
 exception_dates = [
@@ -49,7 +47,7 @@ exception_dates = [
   ~D[2022-02-04],
 ]
 
-dates = Recess.Dates.from_periods_and_exceptions(periods, exception_dates)
+dates = Recess.Period.dates_from_periods_and_exceptions(periods, exception_dates)
 adults = Recess.Adult.calculate_number_of_assigns(adults, dates)
 
 config = %{
@@ -60,4 +58,4 @@ config = %{
 
 adults = Recess.GeneticAlgorithm.call(adults, dates, config)
 
-Recess.Adult.report(adults)
+Recess.Adult.report(adults, dates)

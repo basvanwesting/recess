@@ -39,7 +39,7 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
     if let Some(best_chromosome) = hill_climb.best_chromosome() {
         if let Some(fitness_score) = best_chromosome.fitness_score {
             println!(
-                "fitness_score: {}, generation: {}",
+                "fitness_score: {}, best_generation: {}",
                 fitness_score, hill_climb.best_generation
             );
             best_chromosome

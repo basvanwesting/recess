@@ -1,6 +1,6 @@
 defmodule Recess.Adult do
   @derive {Poison.Encoder, except: [:weight_to_assign, :number_of_assigns_modifier]}
-  defstruct [:name, :start_date, :end_date, :monday, :tuesday, :thursday, :assigned_dates, :number_of_assigns, :number_of_assigns_modifier, :weight_to_assign,]
+  defstruct [:name, :start_date, :end_date, :allowed_weekdays, :assigned_dates, :number_of_assigns, :number_of_assigns_modifier, :weight_to_assign,]
 
   def calculate_number_of_assigns([%__MODULE__{} | _] = adults, [%Date{} | _] = dates) do
     adults =
@@ -76,18 +76,8 @@ defmodule Recess.Adult do
         else
           errors
         end
-        errors = if Date.day_of_week(assigned_date) == 1 && !adult.monday do
-          ["adult #{adult.name}, assigned_date (#{assigned_date}) is monday but not allowed" | errors]
-        else
-          errors
-        end
-        errors = if Date.day_of_week(assigned_date) == 2 && !adult.tuesday do
-          ["adult #{adult.name}, assigned_date (#{assigned_date}) is tuesday but not allowed" | errors]
-        else
-          errors
-        end
-        _errors = if Date.day_of_week(assigned_date) == 4 && !adult.thursday do
-          ["adult #{adult.name}, assigned_date (#{assigned_date}) is thursday but not allowed" | errors]
+        _errors = if Date.day_of_week(assigned_date) not in adult.allowed_weekdays do
+          ["adult #{adult.name}, assigned_date (#{assigned_date}) is weekday #{Date.day_of_week(assigned_date)} but not allowed" | errors]
         else
           errors
         end
@@ -96,12 +86,15 @@ defmodule Recess.Adult do
     |> Enum.reverse()
   end
 
-  def report([%__MODULE__{} | _] = adults) do
+  def report([%__MODULE__{} | _] = adults, [%Date{} | _] = dates) do
+    IO.puts("DATES: #{length(dates)}")
+
+    IO.puts("")
     IO.puts("ASSIGNS:")
     Enum.each(adults, fn adult ->
       case adult.assigned_dates do
         [] -> IO.puts("Adult #{adult.name}, no assigned_dates")
-        [date] -> IO.puts("Adult #{adult.name}, #{date}")
+        [date] -> IO.puts("Adult #{adult.name}, #{date} (#{Date.day_of_week(date)})")
         dates ->
           stats =
             dates
@@ -109,7 +102,11 @@ defmodule Recess.Adult do
             |> Enum.map(fn [a, b] -> Date.diff(b, a) end)
             |> Statistex.statistics()
 
-          formatted_dates = Enum.join(dates, ", ")
+          formatted_dates =
+            dates
+            |> Enum.map(fn date -> "#{date} (#{Date.day_of_week(date)})" end)
+            |> Enum.join(", ")
+
           IO.puts("Adult #{adult.name}, #{formatted_dates} (minimum interval: #{stats.minimum} days)")
       end
     end)
