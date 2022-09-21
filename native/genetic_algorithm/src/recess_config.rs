@@ -7,9 +7,8 @@ pub struct RecessConfig {
     #[serde(with = "HillClimbVariantDef")]
     pub variant: HillClimbVariant,
     pub multithreading: bool,
-    pub invalid_assign_penalty: f64,
-    pub min_allowed_interval: i64,
-    pub std_dev_precision: f64,
+    pub invalid_assign_penalty: isize,
+    pub min_allowed_interval: isize,
 }
 
 #[derive(Serialize, Deserialize)]

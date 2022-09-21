@@ -3,8 +3,6 @@ use chrono::{Datelike, NaiveDate};
 use genetic_algorithm::strategy::hill_climb::prelude::*;
 //use itertools::Itertools;
 use crate::recess_config::RecessConfig;
-use statrs::statistics::Data;
-use statrs::statistics::OrderStatistics;
 use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
@@ -22,7 +20,7 @@ impl<'a> Fitness for RecessFitness<'a> {
         let adults = self.0;
         let dates = self.1;
         let recess_config = self.2;
-        let mut score = 0.0;
+        let mut score: isize = 0;
 
         let mut assigns: HashMap<&Adult, Vec<&NaiveDate>> = HashMap::new();
         chromosome
@@ -44,26 +42,25 @@ impl<'a> Fitness for RecessFitness<'a> {
                     .or_insert(vec![date]);
             });
 
-        let mut min_intervals: Vec<f64> = vec![];
+        let mut min_interval: i64 = 999_999;
+        let min_allowed_interval = recess_config.min_allowed_interval as i64;
         adults.iter().for_each(|adult| {
             if let Some(dates) = assigns.get(adult) {
                 if dates.len() > 1 {
-                    let mut adult_intervals: Vec<i64> = vec![];
                     dates.windows(2).for_each(|pair| {
                         let interval = (*pair[1] - *pair[0]).num_days();
-                        if interval < recess_config.min_allowed_interval {
+                        if interval < min_allowed_interval {
                             score -= recess_config.invalid_assign_penalty;
                         }
-                        adult_intervals.push(interval);
+                        if min_interval > interval {
+                            min_interval = interval;
+                        }
                     });
-                    min_intervals.push(Iterator::min(adult_intervals.into_iter()).unwrap() as f64);
                 }
             }
         });
 
-        let mut x = Data::new(min_intervals);
-        score += x.percentile(0) / recess_config.std_dev_precision;
-
+        score += min_interval as isize;
         Some(score as isize)
     }
 }

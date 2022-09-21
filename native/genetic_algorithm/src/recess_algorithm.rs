@@ -29,16 +29,19 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
         .with_fitness(RecessFitness(&adults, &dates, recess_config))
         .with_fitness_ordering(FitnessOrdering::Maximize);
 
-    //let now = std::time::Instant::now();
+    let now = std::time::Instant::now();
     let hill_climb = hill_climb_builder.call(&mut rng).unwrap();
     //let hill_climb = hill_climb_builder.call_repeatedly(1, &mut rng).unwrap();
-    //let duration = now.elapsed();
+    let duration = now.elapsed();
 
-    //println!("{}", hill_climb);
+    println!("duration: {:?}", duration);
 
     if let Some(best_chromosome) = hill_climb.best_chromosome() {
         if let Some(fitness_score) = best_chromosome.fitness_score {
-            println!("fitness_score: {}", fitness_score);
+            println!(
+                "fitness_score: {}, generation: {}",
+                fitness_score, hill_climb.best_generation
+            );
             best_chromosome
                 .genes
                 .iter()
