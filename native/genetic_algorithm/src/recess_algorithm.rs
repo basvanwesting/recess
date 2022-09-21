@@ -23,9 +23,9 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
 
     let hill_climb_builder = HillClimb::builder()
         .with_genotype(genotype)
-        .with_variant(recess_config.variant.clone())
+        .with_variant(HillClimbVariant::Stochastic)
         .with_max_stale_generations(recess_config.max_stale_generations)
-        .with_multithreading(recess_config.multithreading)
+        .with_multithreading(false)
         .with_fitness(RecessFitness(&adults, &dates, recess_config))
         .with_fitness_ordering(FitnessOrdering::Maximize);
 
