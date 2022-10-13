@@ -147,4 +147,20 @@ defmodule Recess.Adult do
     IO.puts("maximum: #{stats.maximum}")
     IO.puts("standard_deviation: #{Float.round(stats.standard_deviation, 1)}")
   end
+
+  def inspect(%__MODULE__{} = adult) do
+    [
+      :name,
+      :start_date,
+      :end_date,
+      :allowed_weekdays,
+      :assigned_dates,
+      :number_of_assigns,
+      :number_of_assigns_modifier,
+      :weight_to_assign,
+    ]
+    |> Enum.map(fn attr -> "#{attr}: #{Kernel.inspect(Map.get(adult, attr))}" end)
+    |> Enum.join(", ")
+    |> IO.puts()
+  end
 end
