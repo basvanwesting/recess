@@ -90,7 +90,16 @@ defmodule Recess.Adult do
     IO.puts("DATES: #{length(dates)}")
 
     IO.puts("")
-    IO.puts("ASSIGNS:")
+    IO.puts("ASSIGNS (by date):")
+    Enum.each(dates, fn date ->
+      case Enum.find(adults, fn adult -> Enum.member?(adult.assigned_dates, date) end) do
+        %__MODULE__{} = adult -> IO.puts("#{date} (#{Date.day_of_week(date)}), Adult #{adult.name}")
+        _ -> IO.puts("#{date} (#{Date.day_of_week(date)}), no assigned adult")
+      end
+    end)
+
+    IO.puts("")
+    IO.puts("ASSIGNS (by adult):")
     Enum.each(adults, fn adult ->
       case adult.assigned_dates do
         [] -> IO.puts("Adult #{adult.name}, no assigned_dates")

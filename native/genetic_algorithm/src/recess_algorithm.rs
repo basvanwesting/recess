@@ -44,6 +44,7 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
                 "fitness_score: {}, best_generation: {}",
                 fitness_score, hill_climb.best_generation
             );
+            println!("{:?}", best_chromosome.genes);
             best_chromosome
                 .genes
                 .iter()
