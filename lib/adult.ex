@@ -123,8 +123,9 @@ defmodule Recess.Adult do
         adult.assigned_dates
         |> Enum.chunk_every(2, 1, :discard)
         |> Enum.map(fn [a, b] -> Date.diff(b, a) end)
-        |> Enum.min()
+        |> Enum.min(fn -> 0 end)
       end)
+      |> Enum.filter(fn i -> i > 0 end)
       |> Statistex.statistics()
     IO.puts("average: #{Float.round(stats.average, 1)}")
     IO.puts("minimum: #{stats.minimum}")
