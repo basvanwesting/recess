@@ -30,8 +30,10 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
         .with_fitness_ordering(FitnessOrdering::Maximize);
 
     let now = std::time::Instant::now();
-    let hill_climb = hill_climb_builder.call(&mut rng).unwrap();
-    //let hill_climb = hill_climb_builder.call_repeatedly(1, &mut rng).unwrap();
+    //let hill_climb = hill_climb_builder.call(&mut rng).unwrap();
+    let hill_climb = hill_climb_builder
+        .call_repeatedly(recess_config.repeats, &mut rng)
+        .unwrap();
     let duration = now.elapsed();
 
     println!("duration: {:?}", duration);

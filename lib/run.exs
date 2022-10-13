@@ -56,6 +56,7 @@ config = %{
   #max_stale_generations: 1000,
   #variant: "SteepestAscent",
   multithreading: true,
+  repeats: 1,
   invalid_assign_penalty: 1_000_000,
   min_allowed_interval: 21,
 }
