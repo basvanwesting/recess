@@ -6,23 +6,6 @@ default_adult = %Recess.Adult{
 }
 
 adults = [
-  %{ name: "Nina",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Meiske",    allowed_weekdays: [2],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  #%{ name: "Meiske",    allowed_weekdays: [2,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Nora",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Madeleine", allowed_weekdays: [1,4],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Tommie",    allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
-  %{ name: "Tom",       allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Mees",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Suzy",      allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Daan",      allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Deveny",    allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Emma",      allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Ollie",     allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Olivier",   allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Pijke",     allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Foske",     allowed_weekdays: [2,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Sophie",    allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
   %{ name: "Hannah",    allowed_weekdays: [1,4],       start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
   #%{ name: "Hannah",    allowed_weekdays: [1,4,5],     start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
@@ -33,6 +16,23 @@ adults = [
   %{ name: "Mia",       allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
   %{ name: "Pam",       allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
   %{ name: "Philia",    allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-07-31]},
+  %{ name: "Nina",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Meiske",    allowed_weekdays: [2],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  #%{ name: "Meiske",    allowed_weekdays: [2,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Nora",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Madeleine", allowed_weekdays: [1,4],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Tommie",    allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
+  %{ name: "Tom",       allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
+  %{ name: "Mees",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
+  %{ name: "Suzy",      allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Daan",      allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Deveny",    allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Emma",      allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Ollie",     allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Olivier",   allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Pijke",     allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Foske",     allowed_weekdays: [2,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
 ] |> Enum.map(fn attr -> Map.merge(default_adult, attr) end)
 
 periods = [
@@ -51,19 +51,52 @@ exception_dates = [
 dates = Recess.Period.dates_from_periods_and_exceptions(periods, exception_dates)
 adults = Recess.Adult.calculate_number_of_assigns(adults, dates)
 
+adult_alleles =
+  adults
+  |> Enum.flat_map(fn adult -> List.duplicate(adult, adult.number_of_assigns) end)
+  |> Enum.sort_by(fn a -> length(a.allowed_weekdays) end)
+  |> Enum.sort_by(fn a -> Date.diff(a.end_date, a.start_date) end)
+
+{ seed_gene_adults, _ } =
+  dates
+  |> Enum.map_reduce(adult_alleles, fn date, acc ->
+    case Enum.find(acc, fn adult ->
+      Date.day_of_week(date) in adult.allowed_weekdays &&
+        Date.compare(date, adult.start_date) != :lt &&
+        Date.compare(date, adult.end_date) != :gt
+    end) do
+      %Recess.Adult{} = adult ->
+        #IO.puts("seed_gene_adults match: #{adult.name} on #{Date.day_of_week(date)}")
+        { adult, List.delete(acc, adult) }
+      _ ->
+        [adult | rest] = acc
+        #IO.puts("seed_gene_adults no match, take invalid: #{adult.name} on #{Date.day_of_week(date)}")
+        { adult, rest }
+    end
+  end)
+
+seed_genes =
+  seed_gene_adults
+  |> Enum.map(fn adult ->
+    Enum.find_index(adults, fn a -> a == adult end)
+  end)
+
 #dates  |> IO.inspect()
 #adults |> Enum.sort_by(fn a -> a.weight_to_assign end) |> Enum.each(&Recess.Adult.inspect/1)
+#seed_genes |> IO.inspect()
 
 config = %{
-  #max_stale_generations: 100_000,
+  #max_stale_generations: 10,
   #variant: "Stochastic",
-  max_stale_generations: 1,
+  max_stale_generations: 100,
   variant: "SteepestAscent",
   #valid_fitness_score: 0,
+  seed_genes: Enum.shuffle(seed_genes),
   multithreading: true,
   repeats: 1,
-  invalid_assign_penalty: 1_000_000,
-  min_allowed_interval: 14,
+  invalid_date_penalty: 1_000_000,
+  invalid_interval_penalty: 100_000,
+  min_allowed_interval: 21,
 }
 
 adults = Recess.GeneticAlgorithm.call(adults, dates, config)

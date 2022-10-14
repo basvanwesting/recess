@@ -31,10 +31,10 @@ impl<'a> Fitness for RecessFitness<'a> {
                 let date = &dates[index];
                 let adult = &adults[*value];
                 if !adult.allow_weekday(date.weekday()) {
-                    score -= recess_config.invalid_assign_penalty;
+                    score -= recess_config.invalid_date_penalty;
                 }
                 if adult.start_date > *date || adult.end_date < *date {
-                    score -= recess_config.invalid_assign_penalty;
+                    score -= recess_config.invalid_date_penalty;
                 }
                 assigns
                     .entry(adult)
@@ -50,7 +50,7 @@ impl<'a> Fitness for RecessFitness<'a> {
                     dates.windows(2).for_each(|pair| {
                         let interval = (*pair[1] - *pair[0]).num_days();
                         if interval < min_allowed_interval {
-                            score -= recess_config.invalid_assign_penalty;
+                            score -= recess_config.invalid_interval_penalty;
                         }
                         if min_interval > interval {
                             min_interval = interval;

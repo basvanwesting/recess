@@ -188,7 +188,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "env_logger",
- "genetic_algorithm 0.5.4",
+ "genetic_algorithm 0.6.0",
  "itertools",
  "log",
  "rand",
@@ -200,9 +200,9 @@ dependencies = [
 
 [[package]]
 name = "genetic_algorithm"
-version = "0.5.4"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1513e949fced376c4b7dc9c5d6fb3a3fd3eeaeb4492b2b474b9d8ffa5bd6a67"
+checksum = "cad6c4a06e3ae553e6bc92cbb25e359070e9922ebff317e986cdf2b431d4eb4f"
 dependencies = [
  "crossbeam",
  "env_logger",
