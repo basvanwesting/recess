@@ -9,7 +9,6 @@ pub struct RecessConfig {
     pub variant: HillClimbVariant,
     pub multithreading: bool,
     pub repeats: usize,
-    pub seed_genes: Vec<usize>,
     pub invalid_date_penalty: isize,
     pub invalid_interval_penalty: isize,
     pub min_allowed_interval: isize,

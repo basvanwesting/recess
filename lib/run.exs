@@ -51,47 +51,15 @@ exception_dates = [
 dates = Recess.Period.dates_from_periods_and_exceptions(periods, exception_dates)
 adults = Recess.Adult.calculate_number_of_assigns(adults, dates)
 
-adult_alleles =
-  adults
-  |> Enum.flat_map(fn adult -> List.duplicate(adult, adult.number_of_assigns) end)
-  |> Enum.sort_by(fn a -> length(a.allowed_weekdays) end)
-  |> Enum.sort_by(fn a -> Date.diff(a.end_date, a.start_date) end)
-
-{ seed_gene_adults, _ } =
-  dates
-  |> Enum.map_reduce(adult_alleles, fn date, acc ->
-    case Enum.find(acc, fn adult ->
-      Date.day_of_week(date) in adult.allowed_weekdays &&
-        Date.compare(date, adult.start_date) != :lt &&
-        Date.compare(date, adult.end_date) != :gt
-    end) do
-      %Recess.Adult{} = adult ->
-        #IO.puts("seed_gene_adults match: #{adult.name} on #{Date.day_of_week(date)}")
-        { adult, List.delete(acc, adult) }
-      _ ->
-        [adult | rest] = acc
-        #IO.puts("seed_gene_adults no match, take invalid: #{adult.name} on #{Date.day_of_week(date)}")
-        { adult, rest }
-    end
-  end)
-
-seed_genes =
-  seed_gene_adults
-  |> Enum.map(fn adult ->
-    Enum.find_index(adults, fn a -> a == adult end)
-  end)
-
 #dates  |> IO.inspect()
 #adults |> Enum.sort_by(fn a -> a.weight_to_assign end) |> Enum.each(&Recess.Adult.inspect/1)
-#seed_genes |> IO.inspect()
 
 config = %{
   #max_stale_generations: 10,
   #variant: "Stochastic",
   max_stale_generations: 100,
   variant: "SteepestAscent",
-  #valid_fitness_score: 0,
-  seed_genes: Enum.shuffle(seed_genes),
+  valid_fitness_score: 0,
   multithreading: true,
   repeats: 1,
   invalid_date_penalty: 1_000_000,

@@ -16,7 +16,6 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
                 .flat_map(|(index, adult)| vec![index; adult.number_of_assigns])
                 .collect(),
         )
-        .with_seed_genes(recess_config.seed_genes.clone())
         .build()
         .unwrap();
 
