@@ -7,7 +7,6 @@ mod serde_naive_dates;
 
 use self::adult::Adult;
 use self::recess_config::RecessConfig;
-use log::debug;
 
 #[rustler::nif(schedule = "DirtyCpu")]
 fn call_nif(adults_json: String, dates_json: String, recess_config_json: String) -> String {
@@ -20,9 +19,9 @@ fn call_nif(adults_json: String, dates_json: String, recess_config_json: String)
 
     env_logger::init();
 
-    adults.iter().for_each(|adult| debug!("{:?}", adult));
-    debug!("{:?}\n", dates);
-    debug!("{:?}\n", recess_config);
+    adults.iter().for_each(|adult| log::debug!("{:?}", adult));
+    log::debug!("{:?}\n", dates);
+    log::debug!("{:?}\n", recess_config);
 
     recess_algorithm::call(&mut adults, &dates, &recess_config);
 

@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RecessConfig {
     pub max_stale_generations: usize,
+    pub valid_fitness_score: Option<isize>,
     #[serde(with = "HillClimbVariantDef")]
     pub variant: HillClimbVariant,
     pub multithreading: bool,

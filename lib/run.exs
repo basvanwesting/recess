@@ -12,7 +12,7 @@ adults = [
   %{ name: "Nora",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Madeleine", allowed_weekdays: [1,4],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Tommie",    allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
+  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
   %{ name: "Tom",       allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Mees",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Suzy",      allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
@@ -57,12 +57,13 @@ adults = Recess.Adult.calculate_number_of_assigns(adults, dates)
 config = %{
   #max_stale_generations: 100_000,
   #variant: "Stochastic",
-  max_stale_generations: 1000,
+  max_stale_generations: 1,
   variant: "SteepestAscent",
+  #valid_fitness_score: 0,
   multithreading: true,
   repeats: 1,
   invalid_assign_penalty: 1_000_000,
-  min_allowed_interval: 21,
+  min_allowed_interval: 14,
 }
 
 adults = Recess.GeneticAlgorithm.call(adults, dates, config)

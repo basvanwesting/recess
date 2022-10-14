@@ -19,12 +19,13 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
         .build()
         .unwrap();
 
-    //println!("{}", genotype);
+    log::info!("{}", genotype);
 
     let hill_climb_builder = HillClimb::builder()
         .with_genotype(genotype)
         .with_variant(recess_config.variant.clone())
         .with_max_stale_generations(recess_config.max_stale_generations)
+        .with_valid_fitness_score_option(recess_config.valid_fitness_score)
         .with_multithreading(recess_config.multithreading)
         .with_fitness(RecessFitness(&adults, &dates, recess_config))
         .with_fitness_ordering(FitnessOrdering::Maximize);
@@ -36,15 +37,16 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
         .unwrap();
     let duration = now.elapsed();
 
-    println!("duration: {:?}", duration);
+    log::info!("duration: {:?}", duration);
 
     if let Some(best_chromosome) = hill_climb.best_chromosome() {
         if let Some(fitness_score) = best_chromosome.fitness_score {
-            println!(
+            log::info!(
                 "fitness_score: {}, best_generation: {}",
-                fitness_score, hill_climb.best_generation
+                fitness_score,
+                hill_climb.best_generation
             );
-            println!("{:?}", best_chromosome.genes);
+            log::info!("{:?}", best_chromosome.genes);
             best_chromosome
                 .genes
                 .iter()
