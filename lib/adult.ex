@@ -14,7 +14,7 @@ defmodule Recess.Adult do
         %{adult | weight_to_assign: number_of_dates}
       end)
 
-    number_of_dates_to_assign = length(dates)
+    total_number_of_assigns = length(dates)
     total_weight_to_assign = Enum.reduce(adults, 0.0, fn adult, acc -> acc + adult.weight_to_assign end)
 
     adults =
@@ -23,38 +23,38 @@ defmodule Recess.Adult do
         weight_to_assign =
           adult.weight_to_assign
           |> Kernel./(total_weight_to_assign) # normalize weight_to_assign
-          |> Kernel.*(number_of_dates_to_assign) # weight_to_assign in terms of fractional dates
+          |> Kernel.*(total_number_of_assigns) # weight_to_assign in terms of fractional dates
           |> Kernel.+(adult.number_of_assigns_modifier)
 
         %{ adult | weight_to_assign: weight_to_assign}
       end)
 
     # assign modulo of fractional dates
-    {adults, number_of_dates_to_assign} =
+    {adults, total_number_of_assigns} =
       adults
-      |> Enum.map_reduce(number_of_dates_to_assign, fn adult, remaining_dates_to_assign ->
-        weight_to_assign = min(remaining_dates_to_assign, floor(adult.weight_to_assign)) |> max(0)
+      |> Enum.map_reduce(total_number_of_assigns, fn adult, remaining_dates_to_assign ->
+        number_to_assign = min(remaining_dates_to_assign, floor(adult.weight_to_assign)) |> max(0)
         {
           %{adult |
-            number_of_assigns: adult.number_of_assigns + weight_to_assign,
-            weight_to_assign: adult.weight_to_assign - weight_to_assign,
+            number_of_assigns: adult.number_of_assigns + number_to_assign,
+            weight_to_assign: adult.weight_to_assign - number_to_assign,
           },
-          remaining_dates_to_assign - weight_to_assign
+          remaining_dates_to_assign - number_to_assign
         }
       end)
 
     # assign remainder of fractional dates
-    {adults, _number_of_dates_to_assign} =
+    {adults, _total_number_of_assigns} =
       adults
       |> Enum.sort_by(&(&1.weight_to_assign), :desc)
-      |> Enum.map_reduce(number_of_dates_to_assign, fn adult, remaining_dates_to_assign ->
-        weight_to_assign = min(remaining_dates_to_assign, 1) |> max(0)
+      |> Enum.map_reduce(total_number_of_assigns, fn adult, remaining_dates_to_assign ->
+        number_to_assign = min(remaining_dates_to_assign, 1) |> max(0)
         {
           %{adult |
-            number_of_assigns: adult.number_of_assigns + weight_to_assign,
-            weight_to_assign: adult.weight_to_assign - weight_to_assign,
+            number_of_assigns: adult.number_of_assigns + number_to_assign,
+            weight_to_assign: adult.weight_to_assign - number_to_assign,
           },
-          remaining_dates_to_assign - weight_to_assign
+          remaining_dates_to_assign - number_to_assign
         }
       end)
 
@@ -76,8 +76,13 @@ defmodule Recess.Adult do
         else
           errors
         end
-        _errors = if Date.day_of_week(assigned_date) not in adult.allowed_weekdays do
+        errors = if Date.day_of_week(assigned_date) not in adult.allowed_weekdays do
           ["adult #{adult.name}, assigned_date (#{assigned_date}) is weekday #{Date.day_of_week(assigned_date)} but not allowed" | errors]
+        else
+          errors
+        end
+        _errors = if Enum.count(adult.assigned_dates, fn date -> Date.compare(date, assigned_date) == :eq end) > 1 do
+          ["adult #{adult.name}, assigned_date (#{assigned_date}) is double" | errors]
         else
           errors
         end
@@ -87,14 +92,16 @@ defmodule Recess.Adult do
   end
 
   def report([%__MODULE__{} | _] = adults, [%Date{} | _] = dates) do
-    IO.puts("DATES: #{length(dates)}")
+    IO.puts("DATES (total/unique): #{length(dates)}/#{length(Enum.uniq(dates))}")
 
     IO.puts("")
     IO.puts("ASSIGNS (by date):")
-    Enum.each(dates, fn date ->
-      case Enum.find(adults, fn adult -> Enum.member?(adult.assigned_dates, date) end) do
-        %__MODULE__{} = adult -> IO.puts("#{date} (#{Date.day_of_week(date)}), Adult #{adult.name}")
-        _ -> IO.puts("#{date} (#{Date.day_of_week(date)}), no assigned adult")
+    dates
+    |> Enum.uniq()
+    |> Enum.each(fn date ->
+      case Enum.filter(adults, fn adult -> Enum.member?(adult.assigned_dates, date) end) do
+        [] -> IO.puts("#{date} (#{Date.day_of_week(date)}), no assigned adult")
+        adults -> IO.puts("#{date} (#{Date.day_of_week(date)}), #{adults |> Enum.map(&(&1.name)) |> Enum.join(", ")}")
       end
     end)
 
@@ -102,8 +109,8 @@ defmodule Recess.Adult do
     IO.puts("ASSIGNS (by adult):")
     Enum.each(adults, fn adult ->
       case adult.assigned_dates do
-        [] -> IO.puts("Adult #{adult.name}, no assigned_dates")
-        [date] -> IO.puts("Adult #{adult.name}, #{date} (#{Date.day_of_week(date)})")
+        [] -> IO.puts("#{adult.name}, no assigned_dates")
+        [date] -> IO.puts("#{adult.name}, #{date} (#{Date.day_of_week(date)})")
         dates ->
           stats =
             dates
@@ -116,7 +123,7 @@ defmodule Recess.Adult do
             |> Enum.map(fn date -> "#{date} (#{Date.day_of_week(date)})" end)
             |> Enum.join(", ")
 
-          IO.puts("Adult #{adult.name}, #{formatted_dates} (minimum interval: #{stats.minimum} days)")
+          IO.puts("#{adult.name}, #{formatted_dates} (minimum interval: #{stats.minimum} days)")
       end
     end)
 

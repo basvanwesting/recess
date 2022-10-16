@@ -9,5 +9,8 @@ defmodule Recess.Period do
       |> Enum.filter(fn date -> Date.day_of_week(date) in period.weekdays end)
     end)
     |> Enum.reject(fn date -> MapSet.member?(exception_set, date) end)
+    |> List.duplicate(2)
+    |> List.flatten()
+    |> Enum.sort(&(Date.compare(&1,&2) == :lt))
   end
 end

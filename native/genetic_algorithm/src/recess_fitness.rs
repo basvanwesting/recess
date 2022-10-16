@@ -42,6 +42,10 @@ impl<'a> Fitness for RecessFitness<'a> {
                     .or_insert(vec![date]);
             });
 
+        //assigns
+        //.iter_mut()
+        //.for_each(|(_, dates)| dates.sort_unstable());
+
         let mut min_interval: i64 = 999_999;
         let min_allowed_interval = recess_config.min_allowed_interval as i64;
         adults.iter().for_each(|adult| {
@@ -49,7 +53,9 @@ impl<'a> Fitness for RecessFitness<'a> {
                 if dates.len() > 1 {
                     dates.windows(2).for_each(|pair| {
                         let interval = (*pair[1] - *pair[0]).num_days();
-                        if interval < min_allowed_interval {
+                        if interval == 0 {
+                            score -= recess_config.invalid_date_penalty;
+                        } else if interval < min_allowed_interval {
                             score -= recess_config.invalid_interval_penalty;
                         }
                         if min_interval > interval {
