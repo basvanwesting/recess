@@ -6,3 +6,6 @@ Recess planning in Elixir using a [Rust NIF](https://github.com/rusterlium/rustl
 
 The data is hardcoded in `lib/run.exs` for now.
 Run with `mix run lib/run.exs`
+
+Debug Rust with RUST_LOG environment variable `RUST_LOG=debug mix run lib/run.exs`
+The genetic_algorithm crate supports info/debug/trace log levels.
