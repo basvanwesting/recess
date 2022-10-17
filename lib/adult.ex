@@ -77,7 +77,7 @@ defmodule Recess.Adult do
           errors
         end
         errors = if Date.day_of_week(assigned_date) not in adult.allowed_weekdays do
-          ["adult #{adult.name}, assigned_date (#{assigned_date}) is weekday #{Date.day_of_week(assigned_date)} but not allowed" | errors]
+          ["adult #{adult.name}, assigned_date (#{assigned_date}) is weekday #{human_day(assigned_date)} but not allowed" | errors]
         else
           errors
         end
@@ -100,8 +100,8 @@ defmodule Recess.Adult do
     |> Enum.uniq()
     |> Enum.each(fn date ->
       case Enum.filter(adults, fn adult -> Enum.member?(adult.assigned_dates, date) end) do
-        [] -> IO.puts("#{date} (#{Date.day_of_week(date)}), no assigned adult")
-        adults -> IO.puts("#{date} (#{Date.day_of_week(date)}), #{adults |> Enum.map(&(&1.name)) |> Enum.join(", ")}")
+        [] -> IO.puts("#{date}, #{human_day(date)}, no assigned adult")
+        adults -> IO.puts("#{date}, #{human_day(date)}, #{adults |> Enum.map(&(&1.name)) |> Enum.join(", ")}")
       end
     end)
 
@@ -110,7 +110,7 @@ defmodule Recess.Adult do
     Enum.each(adults, fn adult ->
       case adult.assigned_dates do
         [] -> IO.puts("#{adult.name}, no assigned_dates")
-        [date] -> IO.puts("#{adult.name}, #{date} (#{Date.day_of_week(date)})")
+        [date] -> IO.puts("#{adult.name}, #{date} (#{human_day(date)})")
         dates ->
           stats =
             dates
@@ -120,10 +120,10 @@ defmodule Recess.Adult do
 
           formatted_dates =
             dates
-            |> Enum.map(fn date -> "#{date} (#{Date.day_of_week(date)})" end)
+            |> Enum.map(fn date -> "#{date} (#{human_day(date)})" end)
             |> Enum.join(", ")
 
-          IO.puts("#{adult.name}, #{formatted_dates} (minimum interval: #{stats.minimum} days)")
+          IO.puts("#{adult.name}, #{formatted_dates}, minimum interval: #{stats.minimum} days")
       end
     end)
 
@@ -162,6 +162,19 @@ defmodule Recess.Adult do
     IO.puts("minimum: #{stats.minimum}")
     IO.puts("maximum: #{stats.maximum}")
     IO.puts("standard_deviation: #{Float.round(stats.standard_deviation, 1)}")
+  end
+
+  def human_day(date) do
+    case Date.day_of_week(date) do
+      1 -> "ma"
+      2 -> "di"
+      3 -> "wo"
+      4 -> "do"
+      5 -> "vr"
+      6 -> "za"
+      7 -> "zo"
+      0 -> "zo"
+    end
   end
 
   def inspect(%__MODULE__{} = adult) do

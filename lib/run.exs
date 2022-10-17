@@ -22,9 +22,9 @@ adults = [
   %{ name: "Nora",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Madeleine", allowed_weekdays: [1,4],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Tommie",    allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
-  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
-  %{ name: "Tom",       allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
-  %{ name: "Mees",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: -1},
+  %{ name: "Jip",       allowed_weekdays: [5],         start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: 0},
+  %{ name: "Tom",       allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: 0},
+  %{ name: "Mees",      allowed_weekdays: [1,5],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31], number_of_assigns_modifier: 0},
   %{ name: "Suzy",      allowed_weekdays: [1,2],       start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Daan",      allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
   %{ name: "Deveny",    allowed_weekdays: [1,2,3,4,5], start_date: ~D[2022-11-01], end_date: ~D[2023-10-31]},
@@ -39,7 +39,7 @@ periods = [
   %Recess.Period{start_date: ~D[2022-11-01], end_date: ~D[2022-12-20], weekdays: [2]},
   %Recess.Period{start_date: ~D[2023-01-12], end_date: ~D[2023-02-23], weekdays: [4]},
   %Recess.Period{start_date: ~D[2023-03-10], end_date: ~D[2023-04-21], weekdays: [5]},
-  %Recess.Period{start_date: ~D[2023-05-08], end_date: ~D[2023-06-03], weekdays: [1]},
+  %Recess.Period{start_date: ~D[2023-05-08], end_date: ~D[2023-07-03], weekdays: [1]},
   %Recess.Period{start_date: ~D[2023-08-22], end_date: ~D[2023-10-10], weekdays: [2]}, #lower group only
 ]
 
