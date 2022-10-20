@@ -1,11 +1,11 @@
 [package]
-name = "genetic_algorithm"
+name = "algorithm"
 version = "0.1.0"
 authors = []
 edition = "2018"
 
 [lib]
-name = "genetic_algorithm"
+name = "algorithm"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 

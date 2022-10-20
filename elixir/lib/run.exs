@@ -67,6 +67,6 @@ config = %{
   min_allowed_interval: 21,
 }
 
-adults = Recess.GeneticAlgorithm.call(adults, dates, config)
+adults = Recess.Algorithm.call(adults, dates, config)
 
 Recess.Adult.report(adults, dates)

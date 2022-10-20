@@ -12,6 +12,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "algorithm"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "itertools",
+ "log",
+ "recess_algorithm",
+ "rustler",
+]
+
+[[package]]
 name = "android_system_properties"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -180,17 +191,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6398219c33c5768705156b8a69c99c463a51847e2d3647f5adce32bb6e990b1c"
 dependencies = [
  "num-traits",
-]
-
-[[package]]
-name = "genetic_algorithm"
-version = "0.1.0"
-dependencies = [
- "env_logger",
- "itertools",
- "log",
- "recess_algorithm",
- "rustler",
 ]
 
 [[package]]
@@ -560,7 +560,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "env_logger",
- "genetic_algorithm 0.6.0",
+ "genetic_algorithm",
  "itertools",
  "log",
  "rand",

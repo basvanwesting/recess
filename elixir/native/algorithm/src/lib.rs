@@ -20,4 +20,4 @@ fn call_nif(adults_json: String, dates_json: String, config_json: String) -> Str
     serde_json::to_string(&adults).unwrap()
 }
 
-rustler::init!("Elixir.Recess.GeneticAlgorithm", [call_nif]);
+rustler::init!("Elixir.Recess.Algorithm", [call_nif]);

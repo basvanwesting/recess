@@ -1,4 +1,4 @@
-# NIF for Elixir.GeneticAlgorithm
+# NIF for Elixir.Algorithm
 
 ## To build the NIF module:
 
@@ -7,8 +7,8 @@
 ## To load the NIF:
 
 ```elixir
-defmodule GeneticAlgorithm do
-  use Rustler, otp_app: :recess, crate: "genetic_algorithm"
+defmodule Algorithm do
+  use Rustler, otp_app: :recess, crate: "algorithm"
 
   # When your NIF is loaded, it will override this function.
   def add(_a, _b), do: :erlang.nif_error(:nif_not_loaded)
