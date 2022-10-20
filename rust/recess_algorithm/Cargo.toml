@@ -1,0 +1,21 @@
+[package]
+name = "recess_algorithm"
+version = "0.1.0"
+authors = []
+edition = "2018"
+
+[lib]
+name = "recess_algorithm"
+path = "src/lib.rs"
+crate-type = ["lib"]
+
+[dependencies]
+rand = { version = "0.8.5", features = ["small_rng"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4.22"
+genetic_algorithm = "0.6.0"
+statrs = "0.16.0"
+itertools = "0.10.4"
+log = "0.4.0"
+env_logger = "0.9.1"

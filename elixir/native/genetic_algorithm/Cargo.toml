@@ -10,13 +10,13 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-rand = { version = "0.8.5", features = ["small_rng"] }
 rustler = "0.26.0"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-chrono = "0.4.22"
-genetic_algorithm = "0.6.0"
-statrs = "0.16.0"
-itertools = "0.10.4"
+recess_algorithm = { path = "../../../rust/recess_algorithm" }
 log = "0.4.0"
 env_logger = "0.9.1"
+
+#rand = { version = "0.8.5", features = ["small_rng"] }
+#chrono = "0.4.22"
+#genetic_algorithm = "0.6.0"
+#statrs = "0.16.0"
+itertools = "0.10.4"
