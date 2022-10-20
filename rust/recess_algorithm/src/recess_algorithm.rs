@@ -1,12 +1,12 @@
 use crate::adult::Adult;
-use crate::recess_config::RecessConfig;
-use crate::recess_fitness::RecessFitness;
+use crate::config::Config;
+use crate::fitness::Fitness;
 use chrono::NaiveDate;
 use genetic_algorithm::strategy::hill_climb::prelude::*;
 use rand::prelude::*;
 use rand::rngs::SmallRng;
 
-pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &RecessConfig) {
+pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, config: &Config) {
     let mut rng = SmallRng::from_entropy();
     let genotype = UniqueGenotype::builder()
         .with_allele_list(
@@ -23,17 +23,17 @@ pub fn call(adults: &mut Vec<Adult>, dates: &Vec<NaiveDate>, recess_config: &Rec
 
     let hill_climb_builder = HillClimb::builder()
         .with_genotype(genotype)
-        .with_variant(recess_config.variant.clone())
-        .with_max_stale_generations(recess_config.max_stale_generations)
-        .with_valid_fitness_score_option(recess_config.valid_fitness_score)
-        .with_multithreading(recess_config.multithreading)
-        .with_fitness(RecessFitness(&adults, &dates, recess_config))
+        .with_variant(config.variant.clone())
+        .with_max_stale_generations(config.max_stale_generations)
+        .with_valid_fitness_score_option(config.valid_fitness_score)
+        .with_multithreading(config.multithreading)
+        .with_fitness(Fitness(&adults, &dates, config))
         .with_fitness_ordering(FitnessOrdering::Maximize);
 
     let now = std::time::Instant::now();
     //let hill_climb = hill_climb_builder.call(&mut rng).unwrap();
     let hill_climb = hill_climb_builder
-        .call_repeatedly(recess_config.repeats, &mut rng)
+        .call_repeatedly(config.repeats, &mut rng)
         .unwrap();
     let duration = now.elapsed();
 

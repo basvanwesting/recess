@@ -2,7 +2,7 @@ use genetic_algorithm::strategy::hill_climb::HillClimbVariant;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct RecessConfig {
+pub struct Config {
     pub max_stale_generations: usize,
     pub valid_fitness_score: Option<isize>,
     #[serde(with = "HillClimbVariantDef")]
