@@ -22,7 +22,6 @@ Run with `RUST_LOG=debug bundle exec exe/recess`
 
 ## Rust Implementation
 
-This is shared Rust library using the [genetic algorithm](https://github.com/basvanwesting/genetic-algorithm) crate.
+This is a shared Rust library for the implementations above using the [genetic algorithm](https://github.com/basvanwesting/genetic-algorithm) crate.
 
 The genetic_algorithm crate supports info/debug/trace log levels.
-
