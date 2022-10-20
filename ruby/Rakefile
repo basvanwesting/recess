@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+
+RSpec::Core::RakeTask.new(:spec)
+
+task :rust_build do
+  `(cd native/c_string && cargo rustc --release)`
+  `cp -f ./native/c_string/target/release/libc_string.dylib ./lib/recess/c_string.dylib`
+
+  `(cd native/algorithm && cargo rustc --release)`
+  `cp -f ./native/algorithm/target/release/libalgorithm.dylib ./lib/recess/algorithm.dylib`
+end
+
+task default: %i[rust_build spec]
